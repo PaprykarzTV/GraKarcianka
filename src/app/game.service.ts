@@ -7,13 +7,15 @@ interface GameState {
   activePlayer: 'player' | 'opponent';
 }
 
+export type CardLine = 'melee' | 'ranged' | 'aerial';
+export const ALL_CARD_LINES: CardLine[] = ['melee', 'ranged', 'aerial'];
 export interface Card {
   id: number;
   name: string;
   power: number;
   color: string;
   icon?: string;
-  line: 'melee' | 'ranged' | 'aerial';
+  line: CardLine;
   ability?: string;
   unique?: boolean;
   description?: string;

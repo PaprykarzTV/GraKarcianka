@@ -12,16 +12,13 @@
 
 @keyframes draw-border {
   0% {
-    border: 2px dashed rgba(255, 215, 0, 0.2); /* start */
     box-shadow: 0 0 0px gold;
   }
   50% {
-    border: 2px dashed gold;
-    box-shadow: 0 0 8px gold;
+    box-shadow: 0 0 10px 3px gold;
   }
   100% {
-    border: 2px solid gold;
-    box-shadow: 0 0 12px gold;
+    box-shadow: 0 0 0px gold;
   }
 }
 

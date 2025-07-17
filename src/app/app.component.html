@@ -2,40 +2,43 @@
 
   <h1 class="text-3xl font-bold mb-4 text-center">Karciany projekt</h1>
 
-  <!-- Stół gry (środkowa część, zajmuje max dostępnej wysokości) -->
-  <div class="flex-1 flex items-center justify-center">
-    <div 
-      class="board flex justify-center p-4 rounded-2xl border-4 border-white bg-gradient-to-br from-amber-700 to-orange-900 w-full min-h-[250px]"
-      style="position: relative; overflow: visible; flex-wrap: nowrap; max-width: 800px; margin: 0 auto; gap: 8px;"
+  <!-- STÓŁ GRACZA -->
+  <div class="board">
+    <div
+    class="line"
+    *ngFor="let lineName of ALL_CARD_LINES; let i = index"
+    [ngClass]="{ 'highlighted-line': highlightedLines.has(lineName) }"
+    (click)="placeCardOnLine(lineName)"
+    #lineContainer
     >
-      <div
-        #boardCard
-        *ngFor="let card of board; let i = index"
-        [attr.data-id]="card.id"
-        class="board-card"
-        [style.transform]="getBoardCardTransform(i, board.length)"
-      >
-        <card-component 
-        [currentRound]="currentRound"
-        [card]="card"
-        [triggerEffect]="i === board.length - 1"></card-component>
-      </div>
-    </div>
-  </div>
-
-
-
-  <!-- Ręka gracza (na dole) -->
-  <div class="hand flex gap-4 flex-wrap justify-center mt-8 mb-4">
-    <div #handCard *ngFor="let card of hand" [attr.data-id]="card.id">
+      <div class="line-label">{{ lineName.toUpperCase() }}</div>
+    <div class="card-row">
       <card-component
-        [currentRound]="currentRound"
+        *ngFor="let card of lines[lineName]"
         [card]="card"
-        [clickable]="true"
-        (cardClick)="playCard($event)"
+        [currentRound]="currentRound"
+        #boardCard
+        [attr.data-id]="card.id"
       ></card-component>
     </div>
   </div>
+
+  </div>
+
+  <!-- RĘKA GRACZA -->
+  <div class="hand">
+    <card-component
+      *ngFor="let card of hand"
+      [card]="card"
+      [currentRound]="currentRound"
+      [clickable]="true"
+      (cardClick)="selectCard(card)"
+      [ngClass]="{ 'selected-card': selectedCard?.id === card.id }"
+      #handCard
+      [attr.data-id]="card.id"
+    ></card-component>
+  </div>
+
 
   <!-- Animowana karta "flyer" -->
   <div

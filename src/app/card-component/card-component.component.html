@@ -1,8 +1,8 @@
 <div
-  class="w-[128px] h-[192px] rounded-xl shadow-lg text-white font-bold select-none flex flex-col justify-between p-3 cursor-default
+  class="w-[83px] h-[125px] rounded-md shadow-md text-white font-semibold select-none flex flex-col justify-between p-1.5 cursor-default
     bg-gradient-to-br
     relative
-    hover:scale-110 transition-transform duration-300 ease-in-out
+    hover:scale-105 transition-transform duration-300 ease-in-out
   "
   [ngClass]="[
     getGradientClass(card.line),
@@ -17,7 +17,7 @@
   <div class="absolute inset-0 pointer-events-none z-50">
     <div
       *ngFor="let p of particles"
-      class="particle absolute w-2 h-2 rounded-full"
+      class="particle absolute w-1 h-1 rounded-full"
       [ngStyle]="{
         left: p.x + 'px',
         top: p.y + 'px',
@@ -29,32 +29,32 @@
   </div>
 
   <!-- Siła: górny prawy róg -->
-  <div class="absolute top-3 right-3 text-xl bg-white border-gray-950 border-1 text-black bg-opacity-50 rounded-full w-8 h-8 flex items-center justify-center z-20">
+  <div class="absolute top-1.5 right-1.5 text-base bg-white border-gray-950 border-1 text-black bg-opacity-50 rounded-full w-5 h-5 flex items-center justify-center z-20">
     {{ card.power }}
   </div>
 
   <!-- Nazwa: środek -->
-  <div class="flex-grow flex items-center justify-center text-lg px-2 text-center z-20">
+  <div class="flex-grow flex items-center justify-center text-xs px-1 text-center z-20 leading-tight">
     {{ card.name }}
   </div>
 
   <!-- Ikony: dolny lewy róg -->
-  <div class="absolute bottom-3 left-3 flex items-center gap-1 z-20">
+  <div class="absolute bottom-1.5 left-1.5 flex items-center gap-0.5 z-20">
     <!-- Ikona linii -->
     <div
-      class="w-6 h-6 rounded-full border-2 bg-white border-gray-950 flex items-center justify-center"
+      class="w-4 h-4 rounded-full border-2 bg-white border-gray-950 flex items-center justify-center"
       title="{{ card.line }}"
     >
-      <span class="text-xs">{{ getLineSymbol(card.line) }}</span>
+      <span class="text-[9px]">{{ getLineSymbol(card.line) }}</span>
     </div>
 
     <!-- Ikona zdolności -->
     <div
       *ngIf="card.ability"
-      class="w-6 h-6 rounded-full border-2 border-yellow-300 flex items-center justify-center bg-yellow-500"
+      class="w-4 h-4 rounded-full border-2 border-yellow-300 flex items-center justify-center bg-yellow-500"
       title="{{ card.ability }}"
     >
-      <span class="text-xs">
+      <span class="text-[9px]">
         {{ getAbilitySymbol(card.ability) }}
       </span>
     </div>

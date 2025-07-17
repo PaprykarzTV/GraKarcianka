@@ -39,7 +39,7 @@ export class CardComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // Jeśli karta jest unikatowa i została właśnie zagrana, uruchamiamy animację bordera
     if (
-      changes['card'] &&
+      (changes['card'] || changes['currentRound']) &&
       this.card?.unique &&
       this.card.roundPlayed === this.currentRound
     ) {

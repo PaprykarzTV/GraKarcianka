@@ -1,0 +1,45 @@
+/* Ogólne zmniejszenie i uporządkowanie widoku */
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  background: #111;
+}
+
+.line {
+  border: 2px solid #333;
+  padding: 8px;
+  border-radius: 6px;
+  min-height: 165px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.highlighted-line {
+  border-color: gold;
+  background-color: rgba(255, 255, 0, 0.1);
+}
+
+.line-label {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.card-row {
+  display: flex;
+  gap: 4px;
+}
+
+.hand {
+  display: flex;
+  justify-content: center;
+  background: #1a1a1a;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+/* Wyróżnienie wybranej karty */
+.selected-card {
+  transform: translateY(-1rem) scale(1.05);
+}
