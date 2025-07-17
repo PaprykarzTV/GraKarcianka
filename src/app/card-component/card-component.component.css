@@ -1,0 +1,30 @@
+@keyframes moveTo {
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.particle {
+  transform: translate(-50%, -50%);
+  animation: moveTo 700ms ease-out forwards;
+}
+
+@keyframes draw-border {
+  0% {
+    border: 2px dashed rgba(255, 215, 0, 0.2); /* start */
+    box-shadow: 0 0 0px gold;
+  }
+  50% {
+    border: 2px dashed gold;
+    box-shadow: 0 0 8px gold;
+  }
+  100% {
+    border: 2px solid gold;
+    box-shadow: 0 0 12px gold;
+  }
+}
+
+.unique-border-animate {
+  animation: draw-border 1.5s ease-out forwards;
+}

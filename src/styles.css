@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+.flyer-card {
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 0 0 12px #000000cc;
+    pointer-events: none;
+    line-height: 192px;
+    width: '128px';
+    height: '192px';
+    transform-origin: center center;
+}
+
