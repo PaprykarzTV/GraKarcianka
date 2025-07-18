@@ -7,7 +7,7 @@
 
 .particle {
   transform: translate(-50%, -50%);
-  animation: moveTo 700ms ease-out forwards;
+  animation: moveTo 1.5s ease-out forwards;
 }
 
 @keyframes draw-border {

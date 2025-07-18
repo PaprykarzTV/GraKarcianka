@@ -20,6 +20,7 @@ interface Particle {
 export class CardComponent implements OnChanges {
   @Input() card!: Card;
   @Input() clickable = false;
+  @Input() isEnemy: boolean = false;
 
   /** Flaga uruchamiająca animację bordera unikatowej karty (chwilowa) */
   @Input() currentRound: number = 0;
@@ -57,7 +58,7 @@ export class CardComponent implements OnChanges {
     this.animateBorder = true;
     setTimeout(() => {
       this.animateBorder = false;  // Po animacji resetujemy flagę, ale border pozostaje dzięki `card.unique`
-    }, 1000); // Czas animacji dopasowany do CSS
+    }, 1500); // Czas animacji dopasowany do CSS
   }
 
   private generateParticles(): Particle[] {
@@ -98,9 +99,9 @@ export class CardComponent implements OnChanges {
 
   getLineSymbol(line: string): string {
     const symbols: Record<string, string> = {
-      melee: '⚔',
-      ranged: '🏹',
-      aerial: '🛩',
+      melee: '/melee.svg',
+      ranged: '/ranged.svg',
+      aerial: '/artillery.svg',
     };
     return symbols[line] ?? '?';
   }

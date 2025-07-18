@@ -2,28 +2,30 @@
 .board {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 8px;
+  gap: 2px;
   background: #111;
+  border: 2px solid #d1d5dc;
 }
 
 .line {
-  border: 2px solid #333;
-  padding: 8px;
-  border-radius: 6px;
-  min-height: 165px;
+  padding-inline: 8px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
   transition: background 0.3s, border-color 0.3s;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-size: 64px 64px; /* dowolny rozmiar SVG */
+}
+
+.board.reversed {
+  flex-direction: column-reverse;
 }
 
 .highlighted-line {
   border-color: gold;
   background-color: rgba(255, 255, 0, 0.1);
-}
-
-.line-label {
-  font-size: 0.75rem;
-  color: #aaa;
-  margin-bottom: 4px;
 }
 
 .card-row {
@@ -34,10 +36,14 @@
 .hand {
   display: flex;
   justify-content: center;
+  align-items: center;
   background: #1a1a1a;
   padding: 10px;
   flex-wrap: wrap;
+  flex-grow: 1;
 }
+
+
 
 /* Wyróżnienie wybranej karty */
 .selected-card {

@@ -1,63 +1,99 @@
-<div class="min-h-screen bg-green-900 text-white flex flex-col p-4">
+<div class="flex relative">
+  <!-- Boczny Panel -->
+  <div class="w-1/4 h-screen sticky top-0 bg-amber-600 p-4 flex flex-col items-center justify-center">
+    <div class="w-full flex justify-center mb-2">
+      <div class="enemy-deck w-[60px] h-[90px] bg-gray-800 rounded-md shadow-md" #enemyStack></div>
+    </div>
+    <div>
+      <h2 class="text-center text-2xl bold py-2">Punkty przeciwnika : {{enemyPoints}}</h2>
+      <h2 class="text-center text-2xl bold py-2">Punkty Gracza : {{playerPoints}}</h2>
+    </div>
+    <div class="flex justify-center my-2">
+      <button (click)="playCardByEnemy()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white text-sm">
+        Dodaj losową kartę przeciwnika
+      </button>
+    </div>
+    <h2 class="text-center text-2xl bold py-2">Runda {{ currentRound }}</h2>
+  </div>
 
-  <h1 class="text-3xl font-bold mb-4 text-center">Karciany projekt</h1>
+  <!-- Strefa gry -->
+  <div class="min-h-screen grow bg-green-900 text-white flex flex-col p-4">
 
-  <!-- STÓŁ GRACZA -->
-  <div class="board">
-    <div
-    class="line"
-    *ngFor="let lineName of ALL_CARD_LINES; let i = index"
-    [ngClass]="{ 'highlighted-line': highlightedLines.has(lineName) }"
-    (click)="placeCardOnLine(lineName)"
-    #lineContainer
-    >
-      <div class="line-label">{{ lineName.toUpperCase() }}</div>
-    <div class="card-row">
+    <h1 class="text-3xl font-bold mb-4 text-center">Karciany projekt</h1>
+
+    <!-- Kontener na obie plansze -->
+    <div class="flex flex-col gap-3">
+      <!-- GÓRNA PLANSZA - PRZECIWNIK -->
+      <div class="board reversed divide-y-reverse divide-y-2 divide-gray-300">
+        <div
+          class="line"
+          *ngFor="let lineName of ALL_CARD_LINES"
+          [ngStyle]="{ 'background-image': getLineBackgroundIcon(lineName) }"
+          #enemyLineContainer
+        >
+          <div class="card-row">
+            <card-component
+              *ngFor="let card of enemy.lines[lineName]"
+              [card]="card"
+              [currentRound]="currentRound"
+              [attr.data-id]="card.id"
+              [isEnemy]="true"
+            ></card-component>
+          </div>
+        </div>
+      </div>
+      
+      <!-- STÓŁ GRACZA -->
+      <div class="board divide-y-2 divide-gray-300">
+        <div
+        class="line"
+        *ngFor="let lineName of ALL_CARD_LINES; let i = index"
+        [ngClass]="{ 'highlighted-line': highlightedLines.has(lineName) }"
+        (click)="placeCardOnLine(lineName)"
+        [ngStyle]="{ 'background-image': getLineBackgroundIcon(lineName) }"
+        #lineContainer
+        >
+          <div class="card-row">
+            <card-component
+              *ngFor="let card of player.lines[lineName]"
+              [card]="card"
+              [currentRound]="currentRound"
+              #boardCard
+              [attr.data-id]="card.id"
+            ></card-component>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RĘKA GRACZA -->
+    <div class="hand">
       <card-component
-        *ngFor="let card of lines[lineName]"
+        *ngFor="let card of player.hand"
         [card]="card"
         [currentRound]="currentRound"
-        #boardCard
+        [clickable]="true"
+        (cardClick)="selectCard(card)"
+        [ngClass]="{ 'selected-card': selectedCard?.id === card.id }"
+        #handCard
         [attr.data-id]="card.id"
       ></card-component>
     </div>
-  </div>
-
-  </div>
-
-  <!-- RĘKA GRACZA -->
-  <div class="hand">
-    <card-component
-      *ngFor="let card of hand"
-      [card]="card"
-      [currentRound]="currentRound"
-      [clickable]="true"
-      (cardClick)="selectCard(card)"
-      [ngClass]="{ 'selected-card': selectedCard?.id === card.id }"
-      #handCard
-      [attr.data-id]="card.id"
-    ></card-component>
-  </div>
 
 
-  <!-- Animowana karta "flyer" -->
-  <div
-    *ngIf="flyerCard"
-    [style.display]="flyerStyle.display"
-    [style.position]="flyerStyle.position"
-    [style.left]="flyerStyle.left"
-    [style.top]="flyerStyle.top"
-    [style.width]="flyerStyle.width"
-    [style.height]="flyerStyle.height"
-    [style.transform]="flyerStyle.transform"
-    [style.opacity]="flyerStyle.opacity"
-    [style.transition]="flyerStyle.transition"
-    [style.zIndex]="flyerStyle.zIndex"
-  >
-    <card-component
-      [card]="flyerCard"
-      [currentRound]="currentRound"
-      [class.pointer-events-none]="true"
-    ></card-component>
+    <!-- Animowana karta "flyer" -->
+    <div
+      *ngIf="flyerCard"
+      [ngStyle]="flyerStyle"
+    >
+      <card-component
+        [card]="flyerCard"
+        [currentRound]="currentRound"
+        [isEnemy]="isEnemyFlyer"
+        class="pointer-events-none"
+      ></card-component>
+
+    </div>
   </div>
+
 </div>
