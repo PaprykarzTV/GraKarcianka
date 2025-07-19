@@ -30,7 +30,11 @@
 
   <!-- Siła: górny prawy róg -->
   <div
-  class="absolute right-0.5 top-0 h-fit text-center rounded-full  bg-opacity-50  text-black text-base flex items-center justify-center z-20"
+    [ngClass]="{
+      'absolute right-0.5 top-0 h-fit text-center rounded-full  bg-opacity-50 text-base flex items-center justify-center z-20' : true,
+      'text-rose-600': card.power < card.basePower,
+      'text-green-500': card.power > card.basePower
+    }"
   >
     {{ card.power }}
   </div>

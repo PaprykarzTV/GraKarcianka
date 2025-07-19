@@ -5,8 +5,8 @@
       <div class="enemy-deck w-[60px] h-[90px] bg-gray-800 rounded-md shadow-md" #enemyStack></div>
     </div>
     <div>
-      <h2 class="text-center text-2xl bold py-2">Punkty przeciwnika : {{enemyPoints}}</h2>
-      <h2 class="text-center text-2xl bold py-2">Punkty Gracza : {{playerPoints}}</h2>
+      <h2 class="text-center text-2xl bold py-2">Punkty przeciwnika : {{enemyPoints}}, karty : {{enemy.hand.length}}</h2>
+      <h2 class="text-center text-2xl bold py-2">Punkty Gracza : {{playerPoints}}, karty : {{player.hand.length}} </h2>
     </div>
     <div class="flex justify-center my-2">
       <button (click)="playCardByEnemy()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white text-sm">
@@ -29,6 +29,8 @@
           class="line"
           *ngFor="let lineName of ALL_CARD_LINES"
           [ngStyle]="{ 'background-image': getLineBackgroundIcon(lineName) }"
+          (click)="placeCardOnEnemyLine(lineName)"
+          [ngClass]="{ 'highlighted-line': selectedCard?.ability === 'spy' && selectedCard?.line === lineName }"
           #enemyLineContainer
         >
           <div class="card-row">
@@ -79,7 +81,6 @@
         [attr.data-id]="card.id"
       ></card-component>
     </div>
-
 
     <!-- Animowana karta "flyer" -->
     <div

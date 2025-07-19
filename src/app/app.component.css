@@ -12,6 +12,7 @@
   min-height: 120px;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: background 0.3s, border-color 0.3s;
   background-repeat: no-repeat;
   background-position: center;
@@ -24,7 +25,6 @@
 }
 
 .highlighted-line {
-  border-color: gold;
   background-color: rgba(255, 255, 0, 0.1);
 }
 

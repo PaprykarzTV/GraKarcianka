@@ -1,12 +1,3 @@
-interface GameState {
-  round: number;
-  board: Card[];
-  playerHand: Card[];
-  graveyard: Card[];
-  deck: Card[];
-  activePlayer: 'player' | 'opponent';
-}
-
 export interface PlayerState {
   deck: Card[]
   hand: Card[]
@@ -18,11 +9,10 @@ export type CardLine = 'melee' | 'ranged' | 'aerial';
 export const ALL_CARD_LINES: CardLine[] = ['melee', 'ranged', 'aerial'];
 
 export interface Card extends VanillaCard {
-  // NOWE POLA STANU
-  basePower: number;  // Do wyliczania zmian wartości w karcie 
-  played: boolean;      // czy karta została zagrana
-  roundPlayed?: number;  // która to runda
-  effectTriggered?: boolean; // czy efekt został użyty
+  basePower: number; 
+  played: boolean;      
+  roundPlayed?: number;  
+  effectTriggered?: boolean;
 }
 
 export interface VanillaCard {
@@ -32,8 +22,25 @@ export interface VanillaCard {
   color: string;
   icon?: string;
   line: CardLine;
-  ability?: string;
+  ability?: CardAbility;
   unique?: boolean;
   description?: string;
 }
 
+export type CardAbility = 'medic' | 'destroy' | 'spy' | 'boost';
+export type Player = 'player' | 'enemy';
+
+export function shuffleDeck(deck: Card[]): Card[] {
+  const array = [...deck];
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+export function initializeCards(deck: Card[], count: number): { drawn: Card[]; remainingDeck: Card[] } {
+  const drawn = deck.slice(0, count);
+  const remainingDeck = deck.slice(count);
+  return { drawn, remainingDeck };
+}
