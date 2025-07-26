@@ -2,7 +2,6 @@
 .board {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   background: #111;
   border: 2px solid #d1d5dc;
 }
@@ -18,6 +17,7 @@
   background-position: center;
   background-size: contain;
   background-size: 64px 64px; /* dowolny rozmiar SVG */
+  flex-grow: 1;
 }
 
 .board.reversed {

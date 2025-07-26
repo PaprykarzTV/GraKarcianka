@@ -1,13 +1,14 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardComponent } from './card-component/card-component.component';
-import { ALL_CARD_LINES, Card, CardAbility, CardLine, PlayerState, VanillaCard, shuffleDeck, initializeCards, Player } from './game.service';
+import { ALL_CARD_LINES, Card, CardAbility, CardLine, PlayerState, VanillaCard, shuffleDeck, initializeCards, Player, CardAbilityType, DECK } from './game.service';
 import { AudioService } from './audio.service';
+import { NavBarComponent } from "./nav-bar/nav-bar.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, CardComponent],
+  imports: [CommonModule, CardComponent, NavBarComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
@@ -39,23 +40,7 @@ export class CardGameComponent {
     lines: { melee: [], ranged: [], aerial: [] },
     graveyard: [],
   };
-
-  // Talia kart bazowych
-  ZERG_DECK: VanillaCard[] = [
-    { id: 1, name: 'Zergling', power: 2, line: 'melee', ability: "destroy", color: 'from-green-700 to-black' },
-    { id: 2, name: 'Zergling Pack', power: 4, line: 'melee', color: 'from-green-700 to-black' },
-    { id: 3, name: 'Ultralisk', power: 10, line: 'melee', unique: true, ability: "destroy", icon: 'skull', description: 'Potężna jednostka - unikatowa.', color: 'from-purple-800 to-black' },
-    { id: 4, name: 'Hydralisk', power: 5, line: 'ranged', color: 'from-yellow-600 to-brown-700' },
-    { id: 5, name: 'Hydralisk Pack', power: 7, line: 'ranged', color: 'from-yellow-600 to-brown-700' },
-    { id: 6, name: 'Infested Terran', power: 3, line: 'ranged', ability: 'spy', icon: 'eye', description: 'Szpieg - zagrywasz na pole przeciwnika.', color: 'from-gray-700 to-green-500' },
-    { id: 7, name: 'Mutalisk', power: 6, line: 'aerial', color: 'from-blue-600 to-indigo-700' },
-    { id: 8, name: 'Scourge', power: 2, line: 'aerial', ability: 'destroy', icon: 'target', description: 'Eliminuje losową jednostkę wrogą o sile ≤ 5.', color: 'from-red-700 to-black' },
-    { id: 9, name: 'Guardian', power: 8, line: 'aerial',ability: 'boost', color: 'from-blue-800 to-gray-700' },
-    { id: 10, name: 'Overlord', power: 1, line: 'aerial', ability: 'boost', icon: 'plus', description: 'Zwiększa siłę wszystkich jednostek w tej samej linii o +1.', color: 'from-violet-700 to-blue-900' },
-    { id: 11, name: 'Queen', power: 4, line: 'ranged', icon: 'target', description: 'Może zniszczyć jednostkę przeciwnika o sile ≤ 4.', color: 'from-purple-600 to-black' },
-    { id: 12, name: 'Kerrigan (Infested)', power: 12, line: 'ranged', unique: true, icon: 'skull', description: 'Bohater - nie można skopiować ani zniszczyć.', color: 'from-rose-700 to-black' }
-  ];
-
+  
   board: Card[] = [];
   lastPlayedCardId: number | null = null;
   currentRound = 1;
@@ -89,7 +74,7 @@ export class CardGameComponent {
 
   // Inicjalizacja gry (tasowanie i rozdanie kart)
   initializeGame() {
-    const fullDeck : Card[] = this.ZERG_DECK.map(card => ({ ...card, played: false, basePower: card.power }));
+    const fullDeck : Card[] = DECK.map(card => ({ ...card, played: false, basePower: card.power, isDying: false }));
 
     const playerDeck = shuffleDeck(fullDeck);
     const enemyDeck = shuffleDeck(fullDeck);
@@ -223,7 +208,7 @@ export class CardGameComponent {
   // Obsługa zagrania karty na własną linię
   placeCardOnLine(line: CardLine) {
     if (!this.selectedCard || this.selectedCard.line !== line) return;
-    if (this.selectedCard.ability === "spy") return; // Blokada zagrania szpiega na własnej linii
+    if (this.hasAbility(this.selectedCard,'spy')) return; // Blokada zagrania szpiega na własnej linii
     const card = this.selectedCard;
     this.selectedCard = null;
     this.highlightedLines.clear();
@@ -232,7 +217,7 @@ export class CardGameComponent {
 
   // Obsługa zagrania karty na linii przeciwnika
   placeCardOnEnemyLine(line: CardLine) {
-    if (!this.selectedCard || this.selectedCard.ability !== "spy" || this.selectedCard.line !== line) return;
+    if (!this.selectedCard || !this.hasAbility(this.selectedCard,'spy') || this.selectedCard.line !== line) return;
     const card = this.selectedCard;
     this.selectedCard = null;
     this.highlightedLines.clear();
@@ -246,12 +231,22 @@ export class CardGameComponent {
       return;
     }
     const randomEnemyCard = this.enemy.hand[Math.floor(Math.random() * this.enemy.hand.length)];
-    if (randomEnemyCard.ability === "spy") {
+    if (this.hasAbility(randomEnemyCard, 'spy')) {
       this.playCard(randomEnemyCard, 'player', 'enemy'); // Szpieg przeciwnika na planszy gracza
     } else {
       this.playCard(randomEnemyCard, 'enemy', 'enemy');
     }
   }
+
+  hasAbility(card: VanillaCard | null, abilityType: string): boolean {
+    if (!card || !card.ability) return false;
+    const abilities = Array.isArray(card.ability)
+      ? card.ability
+      : card.ability ? [card.ability] : [];
+
+    return abilities.some(ability => ability.type === abilityType);
+  }
+
 
   // Ikony tła dla linii
   getLineBackgroundIcon(line: CardLine) {
@@ -265,14 +260,19 @@ export class CardGameComponent {
 
 
   // Obsługa zdolności karty
-  useCardAbility(ability: CardAbility, source: Player,card: Card) {
-    switch(ability) {
-      case "spy":
-        this.useSpyAbility(source);
-        break;
-      case "destroy":
-        this.useDestroyAbility(source);
-      // inne zdolności...
+  useCardAbility(abilities: CardAbility[] | CardAbility, source: Player,card: Card) {
+    const abilityList = Array.isArray(abilities) ? abilities : [abilities];
+    for (const ability of abilityList) {
+      switch (ability.type) {
+        case 'spy':
+          this.useSpyAbility(source); // możesz też przekazać ability, jeśli ma dodatkowe dane
+          break;
+        case 'destroy':
+          this.useDestroyAbility(source);
+          break;
+        default:
+          console.warn('Unknown ability:', ability);
+      }
     }
   }
 
@@ -303,9 +303,9 @@ export class CardGameComponent {
 
   // Nasłuchiwanie i aplikowanie kart zwiększających wartość w rzędzie +1
   checkForBoosts(line: Card[]) {
-    const boostCount = line.filter(c => c.ability === 'boost').length;
+    const boostCount = line.filter(c => this.hasAbility(c,'boost')).length;
     for (const c of line) {
-      const effectiveBoosts = boostCount - (c.ability === 'boost' ? 1 : 0);
+      const effectiveBoosts = boostCount - (this.hasAbility(c,'boost') ? 1 : 0);
       c.power = (c.basePower ?? c.power) + (effectiveBoosts > 0 ? effectiveBoosts : 0);
       if (boostCount === 0) c.power = c.basePower ?? c.power;
     }
@@ -318,6 +318,24 @@ export class CardGameComponent {
     const sum = target.lines["melee"].reduce((sum,card) => sum + card.power,0);
     if(sum < condition) return;
     const maxPower = Math.max(...target.lines["melee"].map(c => c.power));
-    target.lines["melee"] = target.lines["melee"].filter(c => c.power !== maxPower);
+    for (const card of target.lines["melee"]) {
+      if (card.power === maxPower) {
+        card.isDying = true;
+      }
+    }
+    // Usunięcie kart po animacji
+    setTimeout(() => {
+      target.lines["melee"] = target.lines["melee"].filter(c => !c.isDying);
+      this.updatePoints();
+    }, 700);
   }
+
+  // Obliczanie punktów w danej linii dla gracza
+  getLinePoints(lineName: CardLine, player: Player): number {
+    const target = player === 'player' ? this.player : this.enemy;
+    if (!target.lines[lineName]) return 0;
+    const cards = target.lines[lineName];
+    return cards.reduce((sum, card) => sum + card.power, 0) || 0;
+  }
+
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
-import { Card } from '../game.service';
+import { Card, CardAbility, CardAbilityType, CardDeck, VanillaCard } from '../game.service';
 
 interface Particle {
   x: number;
@@ -18,9 +18,10 @@ interface Particle {
   imports: [CommonModule],
 })
 export class CardComponent implements OnChanges {
-  @Input() card!: Card;
+  @Input() card!: Card | VanillaCard;
   @Input() clickable = false;
   @Input() isEnemy: boolean = false;
+  @Input() backgroundUrl?: string;
 
   /** Flaga uruchamiająca animację bordera unikatowej karty (chwilowa) */
   @Input() currentRound: number = 0;
@@ -42,6 +43,7 @@ export class CardComponent implements OnChanges {
     if (
       (changes['card'] || changes['currentRound']) &&
       this.card?.unique &&
+      this.isFullCard(this.card) &&
       this.card.roundPlayed === this.currentRound
     ) {
       this.triggerBorderAnimation();
@@ -83,18 +85,28 @@ export class CardComponent implements OnChanges {
   }
 
   handleClick(): void {
-    if (this.clickable) {
+    if (this.clickable && this.isFullCard(this.card)) {
       this.cardClick.emit(this.card);
     }
   }
 
-  getGradientClass(line: string): string {
-    const gradients: Record<string, string> = {
-      melee: 'from-purple-800 to-black',
-      ranged: 'from-blue-500 to-black',
-      aerial: 'from-green-700 to-black',
+  getGradientClass(cardDeck: CardDeck): string {
+    switch (cardDeck) {
+      case 'monsters':
+        return 'from-purple-700 to-black';
+      default: 
+        return '';
+    }
+  }
+
+  useBackgroundImage() {
+    if (!this.backgroundUrl) return;
+      return {
+      'background-image': `url(${this.backgroundUrl})`,
+      'background-size': 'contain',
+      'background-repeat': 'no-repeat',
+      'background-position': 'center',
     };
-    return gradients[line] ?? 'from-gray-600 to-black';
   }
 
   getLineSymbol(line: string): string {
@@ -106,13 +118,21 @@ export class CardComponent implements OnChanges {
     return symbols[line] ?? '?';
   }
 
-  getAbilitySymbol(ability: string): string {
-    const abilities: Record<string, string> = {
-      spy: '👁',
-      destroy: '💥',
-      boost: '➕',
-      unique: '⭐',
+  getAbilitySymbol(ability: CardAbility | CardAbility[]): string {
+    const singleAbility: CardAbility = Array.isArray(ability) ? ability[0] : ability;
+
+    const abilitiesSwitch: Record<CardAbilityType, string> = {
+      spy: '/spyIcon.svg',
+      destroy: '/destroyIcon.svg',
+      boost: '/boostIcon.svg',
+      medic: '/medicIcon.svg',
+      summon: '/summonIcon.svg',
+      synergy: '/synergyIcon.svg',
     };
-    return abilities[ability] ?? '?';
+    return abilitiesSwitch[singleAbility.type];
+  }
+
+  isFullCard(card: Card | VanillaCard): card is Card {
+    return 'basePower' in card;
   }
 }

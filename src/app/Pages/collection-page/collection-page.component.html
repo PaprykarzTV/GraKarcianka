@@ -1,0 +1,18 @@
+<div>
+    <app-nav-bar></app-nav-bar>
+    <div class="container mx-auto py-12">
+        <h1 class="text-3xl font-bold mb-6 text-slate-100">My Collection</h1>
+        <p class="text-slate-300 mb-8">Here you can view and manage your card collection.</p>
+        
+        <!-- Kontener kart -->
+        <div class="flex mx-auto flex-wrap gap-4 justify-center sm:justify-start">
+           <ng-container *ngFor="let card of deck">
+            <card-component 
+                [card]="card"
+                [attr.data-id]="card.id"
+            ></card-component>
+            </ng-container>
+        </div>
+
+    </div>
+</div>

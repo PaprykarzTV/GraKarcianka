@@ -1,6 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-import { CardGameComponent } from './app/app.component';
+import { App } from './app';
 
-bootstrapApplication(CardGameComponent, appConfig)
+bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));

@@ -1,0 +1,16 @@
+<nav class="border-b border-slate-800">
+    <div class="container mx-auto flex justify-between py-4">
+        <div class="inline-flex gap-4 items-center">
+            <h2 class="text-xl font-bold text-slate-100 cursor-pointer text-" [routerLink]="['/']">Arcade Platform</h2>
+            <ul class="list-none inline-flex gap-2 items-center">
+                <li [routerLink]="['/game']" routerLinkActive="bg-gray-400" class="px-3 py-2 rounded hover:bg-gray-400 transition text-slate-200 cursor-pointer duration-300">Game</li>
+                <li [routerLink]="['/collection']" routerLinkActive="bg-gray-400" class="px-3 py-2 rounded hover:bg-gray-400 transition text-slate-200 cursor-pointer duration-300">Collections</li>
+            </ul>
+        </div>
+        <div class="inline-flex gap-4 items-center">
+            <h4 class="text-slate-50">Currency</h4>
+            <h4 class="text-slate-50">Second Currency</h4>
+            <div class="w-[40px] h-[40px] bg-amber-500"></div>
+        </div>
+    </div>
+</nav>

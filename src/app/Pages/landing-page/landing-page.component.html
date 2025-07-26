@@ -1,0 +1,57 @@
+<div>
+    <app-nav-bar></app-nav-bar>
+    <main class="container mx-auto py-12 flex flex-col gap-12">
+
+      <!-- Hero -->
+      <header class="bg-gradient-to-r from-slate-900 to-slate-800 w-full py-12 px-6 rounded-xl shadow-lg text-slate-50">
+        <h1 class="text-4xl font-bold mb-4">Card Game</h1>
+        <p class="text-lg max-w-2xl mb-6">
+          Collect cards, build powerful decks, challenge AI opponents or play against friends. Earn resources through the idle game to expand your collection!
+        </p>
+        <div class="inline-flex gap-4">
+          <button class="px-6 py-3 text-sm font-semibold text-slate-100 bg-blue-600 hover:bg-blue-700 rounded-md shadow transition">Play Now</button>
+          <button class="px-6 py-3 text-sm font-semibold text-slate-100 bg-slate-700 hover:bg-slate-800 rounded-md transition">My collection</button>
+        </div>
+      </header>
+    
+      <!-- Sekcja z trybami gry -->
+      <section class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Mock -->
+        <div class="flex flex-col gap-4 p-6 bg-slate-900 text-slate-200 rounded-xl border border-slate-600 shadow-md hover:shadow-lg transition">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-xl font-semibold">Play vs AI</h3>
+            <span class="text-sm text-slate-400">Challenge the computer in various difficulty levels</span>
+          </div>
+          <p class="text-sm text-slate-300 flex-grow">
+            Test your skills against AI opponents with different deck strategies and difficulty settings.
+          </p>
+          <button class="mt-auto px-5 py-2 text-sm bg-slate-700 hover:bg-slate-800 text-slate-100 rounded-md transition">Start Match</button>
+        </div>
+    
+        <!-- Mock -->
+        <div class="flex flex-col gap-4 p-6 bg-slate-900 text-slate-200 rounded-xl border border-slate-600 shadow-md hover:shadow-lg transition">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-xl font-semibold">Ranked PvP</h3>
+            <span class="text-sm text-slate-400">Play against real players</span>
+          </div>
+          <p class="text-sm text-slate-300 flex-grow">
+            Compete with friends or random opponents and climb the leaderboard.
+          </p>
+          <button class="mt-auto px-5 py-2 text-sm bg-slate-700 hover:bg-slate-800 text-slate-100 rounded-md transition">Start PvP</button>
+        </div>
+    
+        <!-- Mock -->
+        <div class="flex flex-col gap-4 p-6 bg-slate-900 text-slate-200 rounded-xl border border-slate-600 shadow-md hover:shadow-lg transition">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-xl font-semibold">Idle Mode</h3>
+            <span class="text-sm text-slate-400">Earn cards while offline</span>
+          </div>
+          <p class="text-sm text-slate-300 flex-grow">
+            Let your deck earn rewards even when you're away. Come back to new surprises!
+          </p>
+          <button class="mt-auto px-5 py-2 text-sm bg-slate-700 hover:bg-slate-800 text-slate-100 rounded-md transition">View Progress</button>
+        </div>
+      </section>
+    </main>
+</div>
