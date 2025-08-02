@@ -2,15 +2,16 @@
   class="w-[60px] h-[100px] rounded-md shadow-md text-white font-semibold select-none flex flex-col justify-between p-1.5 cursor-default
     bg-gradient-to-br
     relative
-    hover:scale-105 transition-transform duration-300 ease-in-out
+    hover:scale-105 hover:z-50 transition-transform duration-300 ease-in-out
   "
+  *ngIf="card"
   [ngClass]="[
-    !backgroundUrl ? getGradientClass(card.deck) : '',
+    !card.imgUrl ? getGradientClass(card.deck) : '',
     card.unique && isFullCard(card) && card.played === true ? 'unique-card-animate' : '',
     isFullCard(card) && card.isDying ? 'card-dying' : ''
   ]"
 
-  [ngStyle]="backgroundUrl ? useBackgroundImage() : {}"
+  [ngStyle]="card.imgUrl ? useBackgroundImage() : {}"
 
   (click)="handleClick()"
 >

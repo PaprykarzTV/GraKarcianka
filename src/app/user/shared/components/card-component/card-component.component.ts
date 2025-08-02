@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
-import { Card, CardAbility, CardAbilityType, CardDeck, VanillaCard } from '../game.service';
+import { Card } from '../../../card-game/card-game-types';
+import { VanillaCard, CardDeck, CardAbility, CardAbilityType } from '../../models/card';
 
 interface Particle {
   x: number;
@@ -20,8 +21,6 @@ interface Particle {
 export class CardComponent implements OnChanges {
   @Input() card!: Card | VanillaCard;
   @Input() clickable = false;
-  @Input() isEnemy: boolean = false;
-  @Input() backgroundUrl?: string;
 
   /** Flaga uruchamiająca animację bordera unikatowej karty (chwilowa) */
   @Input() currentRound: number = 0;
@@ -100,9 +99,9 @@ export class CardComponent implements OnChanges {
   }
 
   useBackgroundImage() {
-    if (!this.backgroundUrl) return;
+    if (!this.card.imgUrl) return;
       return {
-      'background-image': `url(${this.backgroundUrl})`,
+      'background-image': `url(${this.card.imgUrl})`,
       'background-size': 'contain',
       'background-repeat': 'no-repeat',
       'background-position': 'center',

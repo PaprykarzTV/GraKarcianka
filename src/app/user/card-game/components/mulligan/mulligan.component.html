@@ -1,0 +1,26 @@
+<!-- Pełnoekranowy overlay -->
+<div class="mulligan-wrapper fixed inset-0 z-50 bg-black bg-opacity-90 flex flex-col items-center justify-center">
+  <h2 class="text-white text-3xl mb-6">Wybierz karty do wymiany</h2>
+
+  <div class="container">
+    <div class="cards-slider">
+      <div
+        class="card-slot"
+        *ngFor="let item of visibleCards; trackBy: trackByIndex"
+        [attr.data-id]="item.index"
+        (click)="setCurrentIndex(item.index)"
+        #cardElements
+      >
+        <card-component [card]="item.card" [class.selected]="selectedIndexes.has(item.index)">
+        </card-component>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex gap-4">
+    <button class="bg-white px-6 py-2 rounded text-black font-bold" (click)="confirmSelection()">
+      Potwierdź
+    </button>
+    <p class="text-white">Wybrane: {{ changesCount }} / {{ MAX_CHANGES }}</p>
+  </div>
+</div>

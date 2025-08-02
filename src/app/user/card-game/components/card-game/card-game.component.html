@@ -1,23 +1,23 @@
-<div>
+<div >
   <app-nav-bar></app-nav-bar>
   <div class="flex relative">
     <!-- Boczny Panel -->
     <div class="w-1/4 h-screen sticky top-0 bg-slate-800 p-4 flex flex-col items-center justify-center">
-      <div class="w-full flex justify-center mb-2">
-        <div class="enemy-deck w-[60px] h-[90px] bg-gray-800 rounded-md shadow-md" #enemyStack></div>
+      <div class="w-full flex justify-center gap-4 mb-2">
+        <div class="enemy-deck w-[60px] h-[90px] bg-slate-950 rounded-md shadow-md" #enemyStack></div>
+        <div class="enemy-deck w-[60px] h-[90px] bg-rose-800 rounded-md shadow-md" #playerStack></div>
       </div>
       <div>
-        <h2 class="text-center text-2xl bold py-2">Punkty przeciwnika : {{enemyPoints}}, karty : {{enemy.hand.length}}</h2>
-        <h2 class="text-center text-2xl bold py-2">Punkty Gracza : {{playerPoints}}, karty : {{player.hand.length}} </h2>
+        <h2 class="text-center text-2xl bold py-2">Punkty przeciwnika : {{ gameService.enemyPoints}}, karty : {{gameService.enemy.hand.length}}</h2>
+        <h2 class="text-center text-2xl bold py-2">Punkty Gracza : {{ gameService.playerPoints}}, karty : {{gameService.player.hand.length}} </h2>
       </div>
       <div class="flex justify-center my-2">
         <button (click)="playCardByEnemy()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white text-sm">
           Dodaj losową kartę przeciwnika
         </button>
       </div>
-      <h2 class="text-center text-2xl bold py-2">Runda {{ currentRound }}</h2>
+      <h2 class="text-center text-2xl bold py-2">Runda {{ gameService.currentRound }}</h2>
       <card-component
-        [backgroundUrl]="'/SwarmSovereign.png'"
         [card]="{
           id: 1,
           name: 'Swarm Sovereign',
@@ -27,12 +27,14 @@
           description: 'Base unit of the Naruul Swarm. Weak alone, deadly in numbers.',
           played: false,
           basePower: 1,
-          isDying: false
+          isDying: false,
+          imgUrl: '/SwarmSovereign.png'
         }"
         [style.width.px]="60"
         [style.height.px]="100"
       ></card-component>
     </div>
+
   
     <!-- Strefa gry -->
     <div class="min-h-screen grow bg-slate-700 text-white flex flex-col p-4">
@@ -43,27 +45,26 @@
       <div class="flex flex-col gap-3">
         <!-- GÓRNA PLANSZA - PRZECIWNIK -->
         <div class="board reversed divide-y-reverse divide-y-2 divide-gray-300">
-          <div class="flex items-center" *ngFor="let lineName of ALL_CARD_LINES">
+          <div class="flex items-center" *ngFor="let lineName of gameService.ALL_CARD_LINES">
             <!-- Licznik punktów linii przeciwnika -->
             <div class="border-r-2 w-1/24 border-gray-300 px-2 h-full grid place-items-center">
-              <span class="text-xl font-bold"> {{ getLinePoints(lineName,'enemy') }} </span>
+              <span class="text-xl font-bold"> {{ gameService.animatedLinePoints.enemy[lineName] }} </span>
             </div>
 
             <!-- Linia kart przeciwnika -->
             <div
               class="line"
-              [ngStyle]="{ 'background-image': getLineBackgroundIcon(lineName) }"
+              [ngStyle]="{ 'background-image': gameService.getLineBackgroundIcon(lineName) }"
               (click)="placeCardOnEnemyLine(lineName)"
-              [ngClass]="{ 'highlighted-line': hasAbility(selectedCard,'spy') && selectedCard?.line === lineName }"
+              [ngClass]="{ 'highlighted-line': gameService.hasAbility(gameService.selectedCard,'spy') && gameService.selectedCard?.line === lineName }"
               #enemyLineContainer
             >
               <div class="card-row">
                 <card-component
-                  *ngFor="let card of enemy.lines[lineName]"
+                  *ngFor="let card of gameService.enemy.lines[lineName]; trackBy: trackByCardId"
                   [card]="card"
-                  [currentRound]="currentRound"
+                  [currentRound]="gameService.currentRound"
                   [attr.data-id]="card.id"
-                  [isEnemy]="true"
                 ></card-component>
               </div>
             </div>
@@ -73,22 +74,22 @@
   
         <!-- STÓŁ GRACZA -->
         <div class="board divide-y-2 divide-gray-300">
-          <div class="flex items-center" *ngFor="let lineName of ALL_CARD_LINES; let i = index">
+          <div class="flex items-center" *ngFor="let lineName of gameService.ALL_CARD_LINES; let i = index">
             <div class="border-r-2 w-1/24 border-gray-300 px-2 h-full grid place-items-center">
-              <span class="text-xl font-bold"> {{getLinePoints(lineName,'player')}} </span>
+              <span class="text-xl font-bold"> {{ gameService.animatedLinePoints.player[lineName] }} </span>
             </div>
             <div
             class="line"
-            [ngClass]="{ 'highlighted-line': highlightedLines.has(lineName) && !hasAbility(selectedCard,'spy') }"
+            [ngClass]="{ 'highlighted-line': gameService.highlightedLines.has(lineName) && !gameService.hasAbility(gameService.selectedCard, 'spy') }"
             (click)="placeCardOnLine(lineName)"
-            [ngStyle]="{ 'background-image': getLineBackgroundIcon(lineName) }"
+            [ngStyle]="{ 'background-image': gameService.getLineBackgroundIcon(lineName) }"
             #lineContainer
             >
               <div class="card-row">
                 <card-component
-                  *ngFor="let card of player.lines[lineName]"
+                  *ngFor="let card of gameService.player.lines[lineName]; trackBy: trackByCardId"
                   [card]="card"
-                  [currentRound]="currentRound"
+                  [currentRound]="gameService.currentRound"
                   #boardCard
                   [attr.data-id]="card.id"
                 ></card-component>
@@ -99,33 +100,30 @@
       </div>
   
       <!-- RĘKA GRACZA -->
-      <div class="hand">
+      <div class="hand" >
         <card-component
-          *ngFor="let card of player.hand"
+          *ngFor="let card of gameService.player.hand; trackBy: trackByCardId"
           [card]="card"
-          [currentRound]="currentRound"
+          [currentRound]="gameService.currentRound"
           [clickable]="true"
-          (cardClick)="selectCard(card)"
-          [ngClass]="{ 'selected-card': selectedCard?.id === card.id }"
+          (cardClick)="gameService.selectCard(card)"
+          [ngClass]="{ 'selected-card': gameService.selectedCard?.id === card.id, 'opacity-0': !gameService.showHand}"
           #handCard
           [attr.data-id]="card.id"
         ></card-component>
       </div>
   
       <!-- Animowana karta "flyer" -->
-      <div
-        *ngIf="flyerCard"
-        [ngStyle]="flyerStyle"
-      >
+      <div *ngIf="gameService.flyerCard" class="flyer" #flyer>
         <card-component
-          [card]="flyerCard"
-          [currentRound]="currentRound"
-          [isEnemy]="isEnemyFlyer"
+          [card]="gameService.flyerCard"
+          [currentRound]="gameService.currentRound"
           class="pointer-events-none"
         ></card-component>
-  
       </div>
+
     </div>
-  
+
   </div>
 </div>
+<mulligan-component [class.hidden]="!gameService.showMulligan" [hand]="gameService.player.hand" [deck]="gameService.player.deck" (finalState)="onMulliganDone($event)"></mulligan-component>

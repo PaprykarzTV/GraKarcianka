@@ -43,7 +43,11 @@
   flex-grow: 1;
 }
 
-
+.flyer {
+  pointer-events: none;
+  position: fixed;
+  visibility: hidden;
+}
 
 /* Wyróżnienie wybranej karty */
 .selected-card {
